@@ -21,6 +21,28 @@ https://www.twitch.tv/videos/516355741
 
 And was completed in about an hour.
 
+# For loading into the Pi
+import keras
+import numpy as np
+import cv2
+from tensorflow.keras import models
+
+model = models.load_model("sign_detect_model.h5")
+cap = cv2.VideoCapture(0)
+while(True):
+    # Capture frame-by-frame
+    ret, frame = cap.read()
+    input_frame = np.array(cv2.resize(frame,(64,64)),dtype=np.float32)
+    y_prob = model.predict(input_frame) 
+    y_class = y_prob.argmax(axis=-1)
+    print(y_class)
+    # Keys to close the stream
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+# Release the capture
+cap.release()
+cv2.destroyAllWindows()
+
 # Next steps:
 
 1. Add more images
